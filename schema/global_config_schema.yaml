@@ -142,9 +142,9 @@ properties:
           read-length:
             type: integer
             min: 1
-          required:
-            - read-length
-          additionalProperties: no
+        required:
+          - read-length
+        additionalProperties: no
       manta:
         type: object
         properties:
