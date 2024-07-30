@@ -25,8 +25,8 @@ rule run_fastp:
     threads: config_resources["fastp"]["threads"]
     resources:
         mem_mb=config_resources["fastp"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["fastp"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["fastp"]["partition"], config_resources["partitions"]
         ),
     shell:
         "fastp -i {input.r1} -I {input.r2} "

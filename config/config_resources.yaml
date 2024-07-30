@@ -1,170 +1,169 @@
-queues:
+partitions:
   small:
-    - "small"
+    - "spotshort"
   large:
-    - "large"
-    - "large"
+    - "hpc"
 
 tmpdir: "temp"
 
 default:
   threads: 1
   memory: 2000
-  queue: "small"
+  partition: "small"
 alignstats:
   threads: 4
   memory: 8000
-  queue: "small"
+  partition: "small"
 apptainer:
   threads: 1
   memory: 24000
-  queue: "small"
+  partition: "small"
 awscli:
   threads: 1
   memory: 2000
-  queue: "small"
+  partition: "small"
 bbtools:
   threads: 1
   memory: 32000
-  queue: "small"
+  partition: "small"
 bcftools:
   threads: 4
   memory: 8000
-  queue: "small"
+  partition: "small"
 bedtools:
   threads: 1
   memory: 2000
-  queue: "small"
+  partition: "small"
 bwa_index:
   threads: 1
   memory: 8000
-  queue: "small"
+  partition: "small"
 bwa_map_and_sort:
   threads: 12
   memory: 500000
-  queue: "large"
+  partition: "large"
 deepvariant:
   threads: 12
   make_examples_memory: 192000
   call_variants_memory: 480000
   postprocess_variants_memory: 32000
-  queue: "large"
+  partition: "large"
 delly:
   threads: 1
   memory: 12000
-  queue: "small"
+  partition: "small"
 duphold:
   threads: 4
   memory: 8000
-  queue: "small"
+  partition: "small"
 fastp:
   threads: 2
   memory: 8000
-  queue: "small"
+  partition: "small"
 fastqc:
   threads: 2
   memory: 12000
-  queue: "small"
+  partition: "small"
 fastq_screen:
   threads: 4
   memory: 8000
-  queue: "small"
+  partition: "small"
 gatk_bqsr_base_recalibrator:
   threads: 2
   memory: 16000
-  queue: "large"
+  partition: "large"
   java_args: "-Xmx8000m -XX:+UseParallelGC -XX:ParallelGCThreads=2"
 gatk_bqsr_apply_bqsr:
   threads: 1
   memory: 20000
-  queue: "large"
+  partition: "large"
   java_args: "-Xmx10000m"
 gatk_collectgcbiasmetrics:
   threads: 1
   memory: 4000
-  queue: "small"
+  partition: "small"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx3000m"
 gatk_collectwgsmetrics:
   threads: 1
   memory: 8000
-  queue: "small"
+  partition: "small"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx6000m"
 gatk_collectmultiplemetrics:
   threads: 1
   memory: 4000
-  queue: "small"
+  partition: "small"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx3000m"
 gatk_create_sequence_dictionary:
   threads: 1
   memory: 10000
-  queue: "small"
+  partition: "small"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx2000m"
 gatk_mark_duplicates:
   threads: 4
   memory: 20000
-  queue: "small"
+  partition: "small"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=400m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx4000m"
 manta:
   threads: 4
   memory: 4000
-  queue: "small"
+  partition: "small"
 mosdepth:
   threads: 1
   memory: 4000
-  queue: "small"
+  partition: "small"
 multiqc:
   threads: 1
   memory: 4000
-  queue: "small"
+  partition: "small"
 r:
   threads: 1
   memory: 4000
-  queue: "small"
+  partition: "small"
 samtools:
   threads: 4
   memory: 8000
-  queue: "small"
+  partition: "small"
 samtools_sort:
   threads: 2
   memory: 8000
-  queue: "small"
+  partition: "small"
 smoove:
   threads: 1
   memory: 8000
-  queue: "large"
+  partition: "large"
 somalier:
   threads: 1
   memory: 1000
-  queue: "small"
+  partition: "small"
 sra_tools:
   threads: 4
   memory: 8000
-  queue: "large"
+  partition: "large"
 svaba:
   threads: 8
   memory: 32000
-  queue: "large"
+  partition: "large"
 svdb:
   threads: 1
   memory: 4000
-  queue: "small"
+  partition: "small"
 svtools:
   threads: 1
   memory: 2000
-  queue: "small"
+  partition: "small"
 tiddit:
   threads: 2
   memory: 64000
-  queue: "large"
+  partition: "large"
 truvari:
   threads: 1
   memory: 4000
-  queue: "small"
+  partition: "small"
 vep:
   threads: 1
   memory: 4000
-  queue: "small"
+  partition: "small"
 verifybamid2:
   threads: 2
   memory: 22000
-  queue: "small"
+  partition: "small"

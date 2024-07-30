@@ -6,12 +6,16 @@ checkpoint generate_linker:
     output:
         linker="results/export/linker.tsv",
     params:
-        sex_linker=config["sample-linking"]["sex"]
-        if "sample-linking" in config and "sex" in config["sample-linking"]
-        else None,
-        external_id_linker=config["sample-linking"]["external-ids"]
-        if "sample-linking" in config and "external-ids" in config["sample-linking"]
-        else None,
+        sex_linker=(
+            config["sample-linking"]["sex"]
+            if "sample-linking" in config and "sex" in config["sample-linking"]
+            else None
+        ),
+        external_id_linker=(
+            config["sample-linking"]["external-ids"]
+            if "sample-linking" in config and "external-ids" in config["sample-linking"]
+            else None
+        ),
     benchmark:
         "results/performance_benchmarks/generate_linker/linker.tsv"
     conda:
@@ -21,8 +25,8 @@ checkpoint generate_linker:
     threads: config_resources["r"]["threads"]
     resources:
         mem_mb=config_resources["r"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["r"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["r"]["partition"], config_resources["partitions"]
         ),
     script:
         "../scripts/construct_linker_from_inputs.R"
@@ -51,8 +55,8 @@ rule create_cram_export:
     threads: config_resources["samtools"]["threads"]
     resources:
         mem_mb=config_resources["samtools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["samtools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["samtools"]["partition"], config_resources["partitions"]
         ),
     shell:
         "samtools reheader -c 'sed \"s/SM:{wildcards.sqid}/SM:{params.exportid}/ ; "
@@ -87,8 +91,8 @@ rule create_cram_export_simplified_id:
     threads: config_resources["samtools"]["threads"]
     resources:
         mem_mb=config_resources["samtools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["samtools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["samtools"]["partition"], config_resources["partitions"]
         ),
     shell:
         "samtools reheader -c 'sed -r \""
@@ -122,8 +126,8 @@ rule create_crai_export:
     threads: config_resources["samtools"]["threads"]
     resources:
         mem_mb=config_resources["samtools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["samtools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["samtools"]["partition"], config_resources["partitions"]
         ),
     shell:
         "samtools index -@ {threads} -o {output.crai} {input.cram}"
@@ -156,8 +160,8 @@ rule create_snv_gvcf_export:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bcftools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bcftools"]["partition"], config_resources["partitions"]
         ),
     shell:
         'bcftools annotate -h <(echo -e "##wgs-pipelineVersion={params.pipeline_version}\\n##reference={params.reference_build}") -O v {input} | '
@@ -203,8 +207,8 @@ rule create_snv_gvcf_export_simplified_id:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bcftools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bcftools"]["partition"], config_resources["partitions"]
         ),
     shell:
         'bcftools annotate -h <(echo -e "##wgs-pipelineVersion={params.pipeline_version}\\n##reference={params.reference_build}") -O v {input} | '
@@ -253,8 +257,8 @@ rule create_snv_vcf_export:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bcftools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bcftools"]["partition"], config_resources["partitions"]
         ),
     shell:
         'bcftools annotate -h <(echo -e "##wgs-pipelineVersion={params.pipeline_version}\\n##reference={params.reference_build}") -O u {input} | '
@@ -310,8 +314,8 @@ rule create_snv_vcf_export_simplified_id:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bcftools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bcftools"]["partition"], config_resources["partitions"]
         ),
     shell:
         'bcftools annotate -h <(echo -e "##wgs-pipelineVersion={params.pipeline_version}\\n##reference={params.reference_build}") -O u {input} | '
@@ -353,8 +357,8 @@ rule remove_snv_region_exclusions_export:
     threads: config_resources["bedtools"]["threads"]
     resources:
         mem_mb=config_resources["bedtools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bedtools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bedtools"]["partition"], config_resources["partitions"]
         ),
     shell:
         "bedtools intersect -a {input.vcf} -b {input.bed} -wa -v -header | bgzip -c > {output}"
@@ -398,8 +402,8 @@ rule create_sv_vcf_export:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bcftools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bcftools"]["partition"], config_resources["partitions"]
         ),
     shell:
         'bcftools annotate -h <(echo -e "##wgs-pipelineVersion={params.pipeline_version}\\n##reference={params.reference_build}") -O v {input} | '
@@ -447,8 +451,8 @@ rule create_sv_vcf_export_simplified_id:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bcftools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bcftools"]["partition"], config_resources["partitions"]
         ),
     shell:
         'bcftools annotate -h <(echo -e "##wgs-pipelineVersion={params.pipeline_version}\\n##reference={params.reference_build}") -O v {input} | '
@@ -485,8 +489,8 @@ rule remove_breakends:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bcftools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bcftools"]["partition"], config_resources["partitions"]
         ),
     shell:
         'if [[ "{params.remove_breakends}" == "True" ]] ; then '
@@ -506,8 +510,8 @@ rule checksum_export:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     shell:
         "md5sum {input} | sed -r 's|  .*/([^/ ]+)$|  \\1|' > {output}"
@@ -716,8 +720,8 @@ rule zip_vcfs:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     shell:
         "zip -j {output} {input.vcf} {input.sv_vcf}"
@@ -809,14 +813,16 @@ rule export_data_local:
     output:
         "results/export/{projectid}/md5_checks.txt",
     params:
-        export_directory=config["behaviors"]["export-directory"]
-        if "export-directory" in config["behaviors"]
-        else "",
+        export_directory=(
+            config["behaviors"]["export-directory"]
+            if "export-directory" in config["behaviors"]
+            else ""
+        ),
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     shell:
         "{input.bash} {params.export_directory} {output}"
@@ -833,20 +839,24 @@ rule export_cram_remote:
     output:
         tracker="results/export/{projectid}/{sampleid}.cram.s3_transfer_complete.txt",
     params:
-        bucketname=config["behaviors"]["export-s3"]["bucket-name"]
-        if "export-s3" in config["behaviors"]
-        else None,
-        profile="--profile {}".format(config["behaviors"]["export-s3"]["profile-name"])
-        if "export-s3" in config["behaviors"]
-        and "profile-name" in config["behaviors"]["export-s3"]
-        else "",
+        bucketname=(
+            config["behaviors"]["export-s3"]["bucket-name"]
+            if "export-s3" in config["behaviors"]
+            else None
+        ),
+        profile=(
+            "--profile {}".format(config["behaviors"]["export-s3"]["profile-name"])
+            if "export-s3" in config["behaviors"]
+            and "profile-name" in config["behaviors"]["export-s3"]
+            else ""
+        ),
     conda:
         "../envs/awscli.yaml" if not use_containers else None
     threads: 1
     resources:
         mem_mb=config_resources["awscli"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["awscli"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["awscli"]["partition"], config_resources["partitions"]
         ),
     retries: 5
     shell:
@@ -938,13 +948,17 @@ rule export_data_remote:
         "results/export/{projectid}/s3_transfer_complete.txt",
     params:
         export_dir="results/export/{projectid}",
-        bucketname=config["behaviors"]["export-s3"]["bucket-name"]
-        if "export-s3" in config["behaviors"]
-        else None,
-        profile="--profile {}".format(config["behaviors"]["export-s3"]["profile-name"])
-        if "export-s3" in config["behaviors"]
-        and "profile-name" in config["behaviors"]["export-s3"]
-        else "",
+        bucketname=(
+            config["behaviors"]["export-s3"]["bucket-name"]
+            if "export-s3" in config["behaviors"]
+            else None
+        ),
+        profile=(
+            "--profile {}".format(config["behaviors"]["export-s3"]["profile-name"])
+            if "export-s3" in config["behaviors"]
+            and "profile-name" in config["behaviors"]["export-s3"]
+            else ""
+        ),
     conda:
         "../envs/awscli.yaml" if not use_containers else None
     container:
@@ -952,8 +966,8 @@ rule export_data_remote:
     threads: config_resources["awscli"]["threads"]
     resources:
         mem_mb=config_resources["awscli"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["awscli"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["awscli"]["partition"], config_resources["partitions"]
         ),
     retries: 5
     shell:
@@ -975,20 +989,24 @@ rule export_fastq_remote:
     output:
         tracker="results/fastqs/{projectid}/{sampleid}.fastq.s3_transfer_complete.txt",
     params:
-        bucketname=config["behaviors"]["export-s3"]["bucket-name"]
-        if "export-s3" in config["behaviors"]
-        else None,
-        profile="--profile {}".format(config["behaviors"]["export-s3"]["profile-name"])
-        if "export-s3" in config["behaviors"]
-        and "profile-name" in config["behaviors"]["export-s3"]
-        else "",
+        bucketname=(
+            config["behaviors"]["export-s3"]["bucket-name"]
+            if "export-s3" in config["behaviors"]
+            else None
+        ),
+        profile=(
+            "--profile {}".format(config["behaviors"]["export-s3"]["profile-name"])
+            if "export-s3" in config["behaviors"]
+            and "profile-name" in config["behaviors"]["export-s3"]
+            else ""
+        ),
     conda:
         "../envs/awscli.yaml" if not use_containers else None
     threads: 1
     resources:
         mem_mb=config_resources["awscli"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["awscli"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["awscli"]["partition"], config_resources["partitions"]
         ),
     retries: 5
     shell:
@@ -1024,7 +1042,7 @@ rule export_fastqs_remote:
                         set(
                             zip(
                                 manifest.loc[
-                    manifest["projectid"] == wildcards.projectid, "projectid"
+                                manifest["projectid"] == wildcards.projectid, "projectid"
                             ],
                             manifest.loc[manifest["projectid"] == wildcards.projectid, "sampleid"],
                         )
@@ -1049,7 +1067,7 @@ rule export_fastqs_remote:
                         set(
                             zip(
                                 manifest.loc[
-                    manifest["projectid"] == wildcards.projectid, "projectid"
+                                manifest["projectid"] == wildcards.projectid, "projectid"
                             ],
                             manifest.loc[manifest["projectid"] == wildcards.projectid, "sampleid"],
                         )

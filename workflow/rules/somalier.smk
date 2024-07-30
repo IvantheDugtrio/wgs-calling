@@ -25,8 +25,8 @@ rule somalier_extract:
     threads: config_resources["somalier"]["threads"]
     resources:
         mem_mb=config_resources["somalier"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["somalier"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["somalier"]["partition"], config_resources["partitions"]
         ),
     shell:
         "somalier extract -d {params.extract_dir} "
@@ -57,8 +57,8 @@ rule somalier_relate:
     threads: config_resources["somalier"]["threads"]
     resources:
         mem_mb=config_resources["somalier"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["somalier"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["somalier"]["partition"], config_resources["partitions"]
         ),
     shell:
         "somalier relate --ped {input.ped} -o {params.outprefix} {input.somalier}"
@@ -84,8 +84,8 @@ rule somalier_build_pedfile:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     script:
         "../scripts/construct_somalier_pedfile.py"

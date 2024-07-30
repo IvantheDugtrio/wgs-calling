@@ -25,8 +25,8 @@ rule compare_sv_callers:
     threads: config_resources["r"]["threads"]
     resources:
         mem_mb=config_resources["r"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["r"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["r"]["partition"], config_resources["partitions"]
         ),
     script:
         "../scripts/compare_sv_callers.Rmd"

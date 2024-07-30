@@ -25,8 +25,8 @@ rule download_reference_data:
     threads: config_resources["awscli"]["threads"]
     resources:
         mem_mb=config_resources["awscli"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["awscli"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["awscli"]["partition"], config_resources["partitions"]
         ),
         tmpdir=tempDir,
     shell:
@@ -54,8 +54,8 @@ rule index_vcf:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     shell:
         "tabix -p vcf {input}"
@@ -83,8 +83,8 @@ rule adjust_fasta_formatting:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     shell:
         "sed 's/>/_/g' {input} | sed 's/^_/>/' > {output}"

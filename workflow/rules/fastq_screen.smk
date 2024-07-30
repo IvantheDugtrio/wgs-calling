@@ -16,8 +16,8 @@ rule fastq_screen_get_references:
     threads: config_resources["fastq_screen"]["threads"]
     resources:
         mem_mb=config_resources["fastq_screen"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["fastq_screen"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["fastq_screen"]["partition"], config_resources["partitions"]
         ),
     shell:
         "fastq_screen --threads {threads} --get_genomes --outdir {params.outdir} && "
@@ -48,7 +48,9 @@ rule fastq_screen_run:
     threads: config_resources["fastq_screen"]["threads"]
     resources:
         mem_mb=config_resources["fastq_screen"]["memory"],
-        qname=rc.select_queue(config_resources["fastq_screen"]["queue"], config_resources["queues"]),
+        slurm_partition=rc.select_partition(
+            config_resources["fastq_screen"]["partition"], config_resources["partitions"]
+        ),
     shell:
         "fastq_screen --threads {threads} --conf {input.config} --aligner bowtie2 --outdir {params.outdir} {input.fastq}"
 
@@ -72,7 +74,9 @@ rule fastq_screen_run_combined:
     threads: config_resources["fastq_screen"]["threads"]
     resources:
         mem_mb=config_resources["fastq_screen"]["memory"],
-        qname=rc.select_queue(config_resources["fastq_screen"]["queue"], config_resources["queues"]),
+        slurm_partition=rc.select_partition(
+            config_resources["fastq_screen"]["partition"], config_resources["partitions"]
+        ),
     shell:
         "fastq_screen --threads {threads} --conf {input.config} --aligner bowtie2 --outdir {params.outdir} {input.fastq} && "
         "mv {params.outdir}/{wildcards.sampleid}_{wildcards.read}_screen.txt {output.txt} && "

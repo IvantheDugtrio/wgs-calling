@@ -34,8 +34,8 @@ rule run_mosdepth:
     threads: config_resources["mosdepth"]["threads"]
     resources:
         mem_mb=config_resources["mosdepth"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["mosdepth"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["mosdepth"]["partition"], config_resources["partitions"]
         ),
     shell:
         "mosdepth --threads {threads} "

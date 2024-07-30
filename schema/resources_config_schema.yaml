@@ -1,7 +1,7 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 description: tool/rule-specific resource configuration
 properties:
-  queues:
+  partitions:
     patternProperties:
       "^.*$":
         type: array
@@ -18,12 +18,12 @@ properties:
       memory:
         type: integer
         min: 100
-      queue:
+      partition:
         type: string
     required:
       - threads
       - memory
-      - queue
+      - partition
     additionalProperties: false
   default_with_java: &defaults_with_java
     type: object
@@ -34,14 +34,14 @@ properties:
       memory:
         type: integer
         min: 100
-      queue:
+      partition:
         type: string
       java_args:
         type: string
     required:
       - threads
       - memory
-      - queue
+      - partition
       - java_args
     additionalProperties: false
   alignstats:
@@ -75,14 +75,14 @@ properties:
       postprocess_variants_memory:
         type: integer
         min: 100
-      queue:
+      partition:
         type: string
     required:
       - threads
       - make_examples_memory
       - call_variants_memory
       - postprocess_variants_memory
-      - queue
+      - partition
     additionalProperties: false
   delly:
     <<: *defaults
@@ -141,7 +141,7 @@ properties:
   verifybamid2:
     <<: *defaults
 required:
-  - queues
+  - partitions
   - default
   - alignstats
   - awscli

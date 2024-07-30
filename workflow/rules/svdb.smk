@@ -18,8 +18,8 @@ rule merge_sv_vcfs:
     threads: config_resources["svdb"]["threads"]
     resources:
         mem_mb=config_resources["svdb"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["svdb"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["svdb"]["partition"], config_resources["partitions"]
         ),
     shell:
         "svdb --merge --vcf {input} | "
@@ -42,16 +42,18 @@ rule ensemble_sv_vcf:
         bcftools_filter_count=lambda wildcards: "INFO/FOUNDBY >= {}".format(
             config["behaviors"]["sv-endpoints"][wildcards.endpoint]["sv-ensemble"]["min-count"]
         ),
-        bcftools_filter_sources=lambda wildcards: " & INFO/svdb_origin ~ '"
-        + "' & INFO/svdb_origin ~ '".join(
-            config["behaviors"]["sv-endpoints"][wildcards.endpoint]["sv-ensemble"][
-                "required-callers"
-            ]
-        )
-        + "'"
-        if "required-callers"
-        in config["behaviors"]["sv-endpoints"][wildcards.endpoint]["sv-ensemble"]
-        else "",
+        bcftools_filter_sources=lambda wildcards: (
+            " & INFO/svdb_origin ~ '"
+            + "' & INFO/svdb_origin ~ '".join(
+                config["behaviors"]["sv-endpoints"][wildcards.endpoint]["sv-ensemble"][
+                    "required-callers"
+                ]
+            )
+            + "'"
+            if "required-callers"
+            in config["behaviors"]["sv-endpoints"][wildcards.endpoint]["sv-ensemble"]
+            else ""
+        ),
     benchmark:
         "results/performance_benchmarks/ensemble_sv_vcf/{projectid}/{sampleid}.{endpoint}.tsv"
     conda:
@@ -61,8 +63,8 @@ rule ensemble_sv_vcf:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bcftools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bcftools"]["partition"], config_resources["partitions"]
         ),
     shell:
         'bcftools filter -i "{params.bcftools_filter_count} {params.bcftools_filter_sources}" -O z -o {output} {input}'
@@ -86,8 +88,8 @@ rule summarize_sv_variant_sources:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bcftools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bcftools"]["partition"], config_resources["partitions"]
         ),
     shell:
         "bcftools query -f '%CHROM\\t%POS\\t%ID\\t%REF\\t%ALT\\t%QUAL\\t%FILTER\\t%INFO/SVTYPE\\t%INFO/svdb_origin\\n' {input} > {output}"

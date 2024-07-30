@@ -38,8 +38,9 @@ rule bqsr_base_recalibrator_spark:
     threads: config_resources["gatk_bqsr_base_recalibrator"]["threads"]
     resources:
         mem_mb=config_resources["gatk_bqsr_base_recalibrator"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["gatk_bqsr_base_recalibrator"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["gatk_bqsr_base_recalibrator"]["partition"],
+            config_resources["partitions"],
         ),
     wrapper:
         "v2.6.0/bio/gatk/baserecalibratorspark"
@@ -86,8 +87,9 @@ if config["behaviors"]["bqsr"]:
         threads: config_resources["gatk_bqsr_apply_bqsr"]["threads"]
         resources:
             mem_mb=config_resources["gatk_bqsr_apply_bqsr"]["memory"],
-            qname=lambda wildcards: rc.select_queue(
-                config_resources["gatk_bqsr_apply_bqsr"]["queue"], config_resources["queues"]
+            slurm_partition=lambda wildcards: rc.select_partition(
+                config_resources["gatk_bqsr_apply_bqsr"]["partition"],
+                config_resources["partitions"],
             ),
         wrapper:
             "v2.6.0/bio/gatk/applybqsrspark"

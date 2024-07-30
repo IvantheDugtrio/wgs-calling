@@ -11,7 +11,9 @@ rule sra_prefetch:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        queue=rc.select_queue(config_resources["default"]["queue"], config_resources["queues"]),
+        slurm_partition=rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
+        ),
         tmpdir=tempDir,
     shell:
         "prefetch {wildcards.srid} -O {output} --max-size u"
@@ -36,7 +38,9 @@ rule sra_fasterq_dump:
     threads: config_resources["sra_tools"]["threads"]
     resources:
         mem_mb=config_resources["sra_tools"]["memory"],
-        queue=rc.select_queue(config_resources["sra_tools"]["queue"], config_resources["queues"]),
+        slurm_partition=rc.select_partition(
+            config_resources["sra_tools"]["partition"], config_resources["partitions"]
+        ),
         tmpdir=tempDir,
     shell:
         "fasterq-dump {input} --outdir results/sra/{wildcards.srid}-fastqs -e {threads} -t {params.tmpdir}"
@@ -57,6 +61,8 @@ rule sra_compress_read_file:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        queue=rc.select_queue(config_resources["default"]["queue"], config_resources["queues"]),
+        slurm_partition=rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
+        ),
     shell:
         "bgzip -c {input} > {output}"

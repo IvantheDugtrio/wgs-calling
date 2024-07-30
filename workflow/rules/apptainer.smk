@@ -18,8 +18,8 @@ rule apptainer_deepvariant:
     threads: config_resources["apptainer"]["threads"]
     resources:
         mem_mb=config_resources["apptainer"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["apptainer"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["apptainer"]["partition"], config_resources["partitions"]
         ),
         tmpdir=tempDir,
     shell:
