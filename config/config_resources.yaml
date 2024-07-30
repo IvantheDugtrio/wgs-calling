@@ -136,6 +136,10 @@ somalier:
   threads: 1
   memory: 1000
   queue: "small"
+sra_tools:
+  threads: 4
+  memory: 8000
+  queue: "large"
 svaba:
   threads: 8
   memory: 32000

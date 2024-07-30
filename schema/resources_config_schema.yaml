@@ -124,6 +124,8 @@ properties:
     <<: *defaults
   somalier:
     <<: *defaults
+  sra_tools:
+    <<: *defaults
   svaba:
     <<: *defaults
   svdb:
@@ -165,6 +167,7 @@ required:
   - samtools
   - smoove
   - somalier
+  - sra_tools
   - svaba
   - svdb
   - svtools

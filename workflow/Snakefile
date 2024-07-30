@@ -179,6 +179,7 @@ ruleorder: create_sequence_dictionary > download_reference_data
 ruleorder: adjust_fasta_formatting > download_reference_data
 ruleorder: manta_run > index_vcf
 ruleorder: index_vcf_export > index_vcf
+ruleorder: sra_compress_read_file > copy_fastqs
 
 
 rule all:
@@ -210,6 +211,7 @@ include: "rules/picard.smk"
 include: "rules/prepare_fastqs.smk"
 include: "rules/references.smk"
 include: "rules/somalier.smk"
+include: "rules/sra.smk"
 include: "rules/svaba.smk"
 include: "rules/svdb.smk"
 include: "rules/verifybamid2.smk"

@@ -1,0 +1,62 @@
+rule sra_prefetch:
+    """
+    Prefetch spot data from an sra project.
+    """
+    output:
+        temp(directory("results/sra/{srid}-spots/{srid}")),
+    benchmark:
+        "results/performance_benchmarks/sra_prefetch/{srid}.tsv"
+    conda:
+        "../envs/sra.yaml"
+    threads: config_resources["default"]["threads"]
+    resources:
+        mem_mb=config_resources["default"]["memory"],
+        queue=rc.select_queue(config_resources["default"]["queue"], config_resources["queues"]),
+        tmpdir=tempDir,
+    shell:
+        "prefetch {wildcards.srid} -O {output} --max-size u"
+
+
+rule sra_fasterq_dump:
+    """
+    Convert prefetched spot data from an sra project into fastqs.
+    """
+    input:
+        "results/sra/{srid}-spots/{srid}",
+    output:
+        single_reads=temp("results/sra/{srid}-fastqs/{srid}.fastq"),
+        read1=temp("results/sra/{srid}-fastqs/{srid}_1.fastq"),
+        read2=temp("results/sra/{srid}-fastqs/{srid}_2.fastq"),
+    params:
+        tmpdir=tempDir,
+    benchmark:
+        "results/performance_benchmarks/sra_fasterq_dump/{srid}.tsv"
+    conda:
+        "../envs/sra.yaml"
+    threads: config_resources["sra_tools"]["threads"]
+    resources:
+        mem_mb=config_resources["sra_tools"]["memory"],
+        queue=rc.select_queue(config_resources["sra_tools"]["queue"], config_resources["queues"]),
+        tmpdir=tempDir,
+    shell:
+        "fasterq-dump {input} --outdir results/sra/{wildcards.srid}-fastqs -e {threads} -t {params.tmpdir}"
+
+
+rule sra_compress_read_file:
+    """
+    Take the uncompressed fastq output from sra-tools fasterq-dump and bgzip it.
+    """
+    input:
+        "results/sra/{srid}-fastqs/{srid}_{rg}.fastq",
+    output:
+        "results/fastqs/{srid}/{srid}_L001_R{rg}_001.fastq.gz",
+    benchmark:
+        "results/performance_benchmarks/sra_compress_read_file/{srid}_{rg}.tsv"
+    conda:
+        "../envs/bcftools.yaml"
+    threads: config_resources["default"]["threads"]
+    resources:
+        mem_mb=config_resources["default"]["memory"],
+        queue=rc.select_queue(config_resources["default"]["queue"], config_resources["queues"]),
+    shell:
+        "bgzip -c {input} > {output}"
