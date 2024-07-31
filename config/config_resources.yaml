@@ -8,66 +8,66 @@ tmpdir: "temp"
 
 default:
   threads: 1
-  memory: 2000
+  memory: 3800
   partition: "small"
 alignstats:
   threads: 4
   memory: 8000
-  partition: "small"
+  partition: "large"
 apptainer:
   threads: 1
   memory: 24000
-  partition: "small"
+  partition: "large"
 awscli:
   threads: 1
-  memory: 2000
+  memory: 3800
   partition: "small"
 bbtools:
   threads: 1
   memory: 32000
-  partition: "small"
+  partition: "large"
 bcftools:
   threads: 4
   memory: 8000
-  partition: "small"
+  partition: "large"
 bedtools:
   threads: 1
-  memory: 2000
+  memory: 3800
   partition: "small"
 bwa_index:
   threads: 1
   memory: 8000
-  partition: "small"
+  partition: "large"
 bwa_map_and_sort:
-  threads: 12
-  memory: 500000
+  threads: 4
+  memory: 80000
   partition: "large"
 deepvariant:
-  threads: 12
-  make_examples_memory: 192000
-  call_variants_memory: 480000
+  threads: 4
+  make_examples_memory: 12000
+  call_variants_memory: 48000
   postprocess_variants_memory: 32000
   partition: "large"
 delly:
   threads: 1
   memory: 12000
-  partition: "small"
+  partition: "large"
 duphold:
   threads: 4
   memory: 8000
-  partition: "small"
+  partition: "large"
 fastp:
   threads: 2
   memory: 8000
-  partition: "small"
+  partition: "large"
 fastqc:
   threads: 2
   memory: 12000
-  partition: "small"
+  partition: "large"
 fastq_screen:
   threads: 4
   memory: 8000
-  partition: "small"
+  partition: "large"
 gatk_bqsr_base_recalibrator:
   threads: 2
   memory: 16000
@@ -80,60 +80,60 @@ gatk_bqsr_apply_bqsr:
   java_args: "-Xmx10000m"
 gatk_collectgcbiasmetrics:
   threads: 1
-  memory: 4000
+  memory: 3800
   partition: "small"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx3000m"
 gatk_collectwgsmetrics:
   threads: 1
   memory: 8000
-  partition: "small"
+  partition: "large"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx6000m"
 gatk_collectmultiplemetrics:
   threads: 1
-  memory: 4000
+  memory: 3800
   partition: "small"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx3000m"
 gatk_create_sequence_dictionary:
   threads: 1
   memory: 10000
-  partition: "small"
+  partition: "large"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx2000m"
 gatk_mark_duplicates:
   threads: 4
   memory: 20000
-  partition: "small"
+  partition: "large"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=400m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx4000m"
 manta:
   threads: 4
   memory: 4000
-  partition: "small"
+  partition: "large"
 mosdepth:
   threads: 1
-  memory: 4000
+  memory: 3800
   partition: "small"
 multiqc:
   threads: 1
-  memory: 4000
+  memory: 3800
   partition: "small"
 r:
   threads: 1
-  memory: 4000
+  memory: 3800
   partition: "small"
 samtools:
   threads: 4
   memory: 8000
-  partition: "small"
+  partition: "large"
 samtools_sort:
   threads: 2
   memory: 8000
-  partition: "small"
+  partition: "large"
 smoove:
   threads: 1
   memory: 8000
   partition: "large"
 somalier:
   threads: 1
-  memory: 1000
+  memory: 3800
   partition: "small"
 sra_tools:
   threads: 4
@@ -145,25 +145,25 @@ svaba:
   partition: "large"
 svdb:
   threads: 1
-  memory: 4000
+  memory: 3800
   partition: "small"
 svtools:
   threads: 1
-  memory: 2000
+  memory: 3800
   partition: "small"
 tiddit:
   threads: 2
-  memory: 64000
+  memory: 32000
   partition: "large"
 truvari:
   threads: 1
-  memory: 4000
+  memory: 3800
   partition: "small"
 vep:
   threads: 1
-  memory: 4000
+  memory: 3800
   partition: "small"
 verifybamid2:
   threads: 2
   memory: 22000
-  partition: "small"
+  partition: "large"
