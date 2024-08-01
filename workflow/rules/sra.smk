@@ -43,7 +43,8 @@ rule sra_fasterq_dump:
         ),
         tmpdir=tempDir,
     shell:
-        "fasterq-dump {input} --outdir results/sra/{wildcards.srid}-fastqs -e {threads} -t {params.tmpdir}"
+        "fasterq-dump {input}/{wildcards.srid} --outdir results/sra/{wildcards.srid}-fastqs -e {threads} -t {params.tmpdir} && "
+        'if [[ ! -f "{output.single_reads}" ]] ; then touch {output.single_reads} ; fi'
 
 
 rule sra_compress_read_file:
