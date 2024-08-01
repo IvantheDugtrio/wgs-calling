@@ -21,6 +21,7 @@ reference_data/
 logs/
 run_*.o*
 run_*.e*
+slurm*out
 
 # Emacs backup files
 *~
