@@ -136,8 +136,8 @@ somalier:
   memory: 3800
   partition: "small"
 sra_tools:
-  threads: 4
-  memory: 8000
+  threads: 8
+  memory: 16000
   partition: "large"
 svaba:
   threads: 8
