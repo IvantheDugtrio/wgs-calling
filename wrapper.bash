@@ -10,4 +10,4 @@
 if [[ ! -d "snakemake/conda" ]] || ( [[ -d "snakemake/conda" ]] && [[ -z "$(ls -A .snakemake/conda)" ]] ) ; then
     snakemake -j1 -p --rerun-incomplete --rerun-triggers mtime --use-conda --use-singularity --conda-create-envs-only
 fi
-snakemake -j150 --profile ../slurm-profile -p --rerun-incomplete --rerun-triggers mtime --use-conda --use-singularity
+snakemake -j20 --profile ../slurm-profile -p --rerun-incomplete --rerun-triggers mtime --use-conda --use-singularity
