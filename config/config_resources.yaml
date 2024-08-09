@@ -39,8 +39,8 @@ bwa_index:
   memory: 8000
   partition: "large"
 bwa_map_and_sort:
-  threads: 4
-  memory: 80000
+  threads: 12
+  memory: 370000
   partition: "large"
 deepvariant:
   threads: 4
@@ -50,7 +50,7 @@ deepvariant:
   partition: "large"
 delly:
   threads: 1
-  memory: 12000
+  memory: 48000
   partition: "large"
 duphold:
   threads: 4
@@ -100,12 +100,12 @@ gatk_create_sequence_dictionary:
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx2000m"
 gatk_mark_duplicates:
   threads: 4
-  memory: 20000
+  memory: 48000
   partition: "large"
-  java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=400m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx4000m"
+  java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=400m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx10000m"
 manta:
   threads: 4
-  memory: 4000
+  memory: 16000
   partition: "large"
 mosdepth:
   threads: 1
@@ -129,7 +129,7 @@ samtools_sort:
   partition: "large"
 smoove:
   threads: 1
-  memory: 8000
+  memory: 48000
   partition: "large"
 somalier:
   threads: 1
