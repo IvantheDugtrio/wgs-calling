@@ -65,7 +65,11 @@ rule bqsr_apply_bqsr:
             genome=reference_build,
             suffix=["dict", "fai"],
         ),
-        table="results/bqsr/{projectid}/{sampleid}.recal_table",
+        table=(
+            "results/bqsr/{projectid}/{sampleid}.recal_table"
+            if config["behaviors"]["bqsr"]
+            else []
+        ),
     output:
         bam="results/aligned_bams/{projectid}/{sampleid}.bam",
         bai="results/aligned_bams/{projectid}/{sampleid}.bai",
