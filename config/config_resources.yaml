@@ -2,6 +2,8 @@ partitions:
   small:
     - "spotshort"
   large:
+    - "comp"
+  mega:
     - "hpc"
 
 tmpdir: "temp"
@@ -36,18 +38,18 @@ bedtools:
   partition: "small"
 bwa_index:
   threads: 1
-  memory: 8000
-  partition: "large"
+  memory: 128000
+  partition: "mega"
 bwa_map_and_sort:
   threads: 12
   memory: 370000
-  partition: "large"
+  partition: "mega"
 deepvariant:
   threads: 4
   make_examples_memory: 12000
   call_variants_memory: 48000
   postprocess_variants_memory: 32000
-  partition: "large"
+  partition: "mega"
 delly:
   threads: 1
   memory: 48000
@@ -101,11 +103,11 @@ gatk_create_sequence_dictionary:
 gatk_mark_duplicates:
   threads: 4
   memory: 48000
-  partition: "large"
+  partition: "mega"
   java_args: "-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=400m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx10000m"
 manta:
   threads: 4
-  memory: 16000
+  memory: 15000
   partition: "large"
 mosdepth:
   threads: 1
@@ -138,7 +140,7 @@ somalier:
 sra_tools:
   threads: 8
   memory: 16000
-  partition: "large"
+  partition: "mega"
 svaba:
   threads: 8
   memory: 32000
