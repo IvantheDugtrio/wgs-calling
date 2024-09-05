@@ -61,6 +61,9 @@ references:
     fasta: "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz"
     exclusion-regions-bed: "resources/grch38_encodelist_centromeres_telomeres.bed"
     exons-gtf-gz: "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.ncbiRefSeq.gtf.gz"
+  t2t:
+    fasta: "https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/CHM13/assemblies/analysis_set/chm13v2.0.fa.gz"
+    exclusion-regions-bed: "resources/t2t_centromeres_telomeres.bed"
 bqsr:
   grch38:
     known-indels-vcf-gz: "s3://broad-references/hg38/v0/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz"
@@ -73,9 +76,16 @@ verifybamid2:
     db-UD: "https://raw.githubusercontent.com/Griffan/VerifyBamID/master/resource/1000g.phase3.100k.b38.vcf.gz.dat.UD"
     db-mu: "https://raw.githubusercontent.com/Griffan/VerifyBamID/master/resource/1000g.phase3.100k.b38.vcf.gz.dat.mu"
     db-bed: "https://raw.githubusercontent.com/Griffan/VerifyBamID/master/resource/1000g.phase3.100k.b38.vcf.gz.dat.bed"
+  t2t:
+    db-V: "/fsx/Development/estimate-verifybamid2-reference-data-runs/100k/estimate-verifybamid2-reference-data/results/verify_output/1000g.phase3.unrelated.100k.chm13v2.0.V"
+    db-UD: "/fsx/Development/estimate-verifybamid2-reference-data-runs/100k/estimate-verifybamid2-reference-data/results/verify_output/1000g.phase3.unrelated.100k.chm13v2.0.UD"
+    db-mu: "/fsx/Development/estimate-verifybamid2-reference-data-runs/100k/estimate-verifybamid2-reference-data/results/verify_output/1000g.phase3.unrelated.100k.chm13v2.0.mu"
+    db-bed: "/fsx/Development/estimate-verifybamid2-reference-data-runs/100k/estimate-verifybamid2-reference-data/results/verify_output/1000g.phase3.unrelated.100k.chm13v2.0.bed"
 deepvariant:
   grch38:
     calling-ranges: "resources/deepvariant_calling_ranges_grch38.tsv"
+  t2t:
+    calling-ranges: "resources/deepvariant_calling_ranges_chm13v2.0.tsv"
 delly:
   grch38:
     exclude-bed: "https://raw.githubusercontent.com/dellytools/delly/main/excludeTemplates/human.hg38.excl.tsv"
@@ -98,6 +108,11 @@ manta:
   grch38:
     calling-range-bed-gz: "resources/manta_calling_ranges_grch38.bed.gz"
     calling-range-bed-gz-tbi: "resources/manta_calling_ranges_grch38.bed.gz.tbi"
+  t2t:
+    calling-range-bed-gz: "resources/manta_calling_ranges_chm13v2.0.bed.gz"
+    calling-range-bed-gz-tbi: "resources/manta_calling_ranges_chm13v2.0.bed.gz.tbi"
 somalier:
   grch38:
     sites-vcf-gz: "https://github.com/brentp/somalier/files/3412456/sites.hg38.vcf.gz"
+  t2t:
+    sites-vcf-gz: "https://github.com/brentp/somalier/files/9954286/sites.chm13v2.T2T.vcf.gz"
