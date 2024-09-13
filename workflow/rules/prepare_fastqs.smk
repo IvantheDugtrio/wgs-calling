@@ -85,7 +85,7 @@ checkpoint input_bam_sample_lanes:
     output:
         "results/fastqs_from_bam/{projectid}/{sampleid}_expected-lanes.tsv",
     params:
-        assume_single_lane=True,
+        assume_single_lane=config["assume-single-lane"],
     benchmark:
         "results/performance_benchmarks/input_bam_sample_lanes/{projectid}/{sampleid}.tsv"
     conda:
@@ -117,7 +117,7 @@ rule input_bam_to_split_fastq:
     output:
         "results/fastqs_from_bam/{projectid}/{sampleid}_L00{lane}_{readgroup}_001.fastq.gz",
     params:
-        assume_single_lane=True,
+        assume_single_lane=config["assume-single-lane"],
         off_target_read_flag=lambda wildcards: 3 - int(wildcards.readgroup.strip("R")),
     benchmark:
         "results/performance_benchmarks/input_bam_to_split_fastq/{projectid}/{sampleid}_L00{lane}_{readgroup}.tsv"
@@ -159,7 +159,7 @@ checkpoint input_fastq_sample_lanes:
     output:
         temp("results/fastqs_from_fastq/{projectid}/{sampleid}_{readgroup}_expected-lanes.tsv"),
     params:
-        assume_single_lane=True,
+        assume_single_lane=config["assume-single-lane"],
     benchmark:
         "results/performance_benchmarks/input_fastq_sample_lanes/{projectid}/{sampleid}_{readgroup}.tsv"
     threads: 1
@@ -189,7 +189,7 @@ rule input_fastq_to_split_fastq:
     output:
         temp("results/bbtools_input/{projectid}/{sampleid}_L00{lane}_{readgroup}_001.fastq.gz"),
     params:
-        assume_single_lane=True,
+        assume_single_lane=config["assume-single-lane"],
     benchmark:
         "results/performance_benchmarks/input_fastq_to_split_fastq/{projectid}/{sampleid}_L00{lane}_{readgroup}.tsv"
     conda:

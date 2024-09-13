@@ -33,6 +33,7 @@ behaviors:
       sv-remove-breakends: yes
   outcome: "release"
   symlink-fastqs: no
+  assume-single-lane: no
   remove-duplicates: no
   import-s3:
     profile-name: "profile-name"

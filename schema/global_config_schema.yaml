@@ -78,6 +78,9 @@ properties:
         pattern: "^fastqc$|^alignment$|^calling$|^release$"
       symlink-fastqs:
         type: boolean
+      assume-single-lane:
+        type: boolean
+        default: false
       import-s3:
         type: object
         properties:
