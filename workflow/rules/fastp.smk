@@ -35,6 +35,7 @@ rule run_fastp:
         "--failed_out {output.failed_fastq} "
         "-q {params.quality} "
         "--trim_poly_g "
+        "--trim_poly_x "
         "--verbose "
         "--overrepresentation_analysis "
         "--overrepresentation_sampling 100 "
