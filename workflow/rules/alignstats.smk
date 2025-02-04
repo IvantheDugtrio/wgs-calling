@@ -18,8 +18,8 @@ rule run_alignstats:
     threads: config_resources["alignstats"]["threads"]
     resources:
         mem_mb=config_resources["alignstats"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["alignstats"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["alignstats"]["partition"], config_resources["partitions"]
         ),
     shell:
         "alignstats -C -U "
@@ -43,8 +43,8 @@ rule merge_alignstats:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     script:
         "../scripts/alignstats_json_to_yaml.py"

@@ -21,7 +21,7 @@ jobs:
       - run:
           name: build_and_test_python
           command: |
-            mamba install -c bioconda -c conda-forge -y curl gnupg pytest-cov pytest-lazy-fixture pandas snakemake configparser
+            mamba install -c bioconda -c conda-forge -y curl gnupg pytest pytest-cov pandas "snakemake<8" configparser
             pytest --cov=workflow/scripts --cov=lib workflow/scripts lib
             curl -Os https://uploader.codecov.io/latest/linux/codecov
             chmod +x codecov

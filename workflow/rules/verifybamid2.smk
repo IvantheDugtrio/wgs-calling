@@ -28,8 +28,8 @@ rule estimate_contamination:
     threads: config_resources["verifybamid2"]["threads"]
     resources:
         mem_mb=config_resources["verifybamid2"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["verifybamid2"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["verifybamid2"]["partition"], config_resources["partitions"]
         ),
     shell:
         "verifybamid2 "

@@ -22,8 +22,8 @@ rule run_fastqc_pretrimming:
     threads: config_resources["fastqc"]["threads"]
     resources:
         mem_mb=config_resources["fastqc"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["fastqc"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["fastqc"]["partition"], config_resources["partitions"]
         ),
     shell:
         "mkdir -p {params.outdir} && "
@@ -55,8 +55,8 @@ rule run_fastqc_posttrimming:
     threads: config_resources["fastqc"]["threads"]
     resources:
         mem_mb=config_resources["fastqc"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["fastqc"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["fastqc"]["partition"], config_resources["partitions"]
         ),
     shell:
         "mkdir -p {params.outdir} && "

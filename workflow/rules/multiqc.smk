@@ -54,8 +54,8 @@ rule run_multiqc_fastq_lane_specific:
     threads: config_resources["multiqc"]["threads"]
     resources:
         mem_mb=config_resources["multiqc"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["multiqc"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["multiqc"]["partition"], config_resources["partitions"]
         ),
     shell:
         "multiqc {params.target_dirs} "
@@ -168,8 +168,8 @@ rule run_multiqc_alignment_combined_lanes:
     threads: config_resources["multiqc"]["threads"]
     resources:
         mem_mb=config_resources["multiqc"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["multiqc"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["multiqc"]["partition"], config_resources["partitions"]
         ),
     shell:
         "multiqc {params.target_dirs} "

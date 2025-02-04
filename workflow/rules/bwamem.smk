@@ -15,8 +15,8 @@ rule samtools_index_fasta:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     shell:
         "samtools faidx {input}"
@@ -49,14 +49,16 @@ rule bwa_index:
     conda:
         "../envs/{}.yaml".format(config["behaviors"]["aligner"]) if not use_containers else None
     container:
-        "{}/{}.sif".format(
-            apptainer_images, config["behaviors"]["aligner"]
-        ) if use_containers else None
+        (
+            "{}/{}.sif".format(apptainer_images, config["behaviors"]["aligner"])
+            if use_containers
+            else None
+        )
     threads: config_resources["bwa_index"]["threads"]
     resources:
         mem_mb=config_resources["bwa_index"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bwa_index"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bwa_index"]["partition"], config_resources["partitions"]
         ),
     shell:
         "{params.exec_name} index {input.fasta}"
@@ -101,18 +103,20 @@ rule bwa_map_and_sort:
         ),
         tmpdir=tempDir,
     conda:
-        lambda wildcards: "../envs/{}.yaml".format(
-            config["behaviors"]["aligner"]
-        ) if not use_containers else None
+        lambda wildcards: (
+            "../envs/{}.yaml".format(config["behaviors"]["aligner"]) if not use_containers else None
+        )
     container:
-        "{}/{}.sif".format(
-            apptainer_images, config["behaviors"]["aligner"]
-        ) if use_containers else None
+        (
+            "{}/{}.sif".format(apptainer_images, config["behaviors"]["aligner"])
+            if use_containers
+            else None
+        )
     threads: config_resources["bwa_map_and_sort"]["threads"]
     resources:
         mem_mb=config_resources["bwa_map_and_sort"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bwa_map_and_sort"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bwa_map_and_sort"]["partition"], config_resources["partitions"]
         ),
         tmpdir=tempDir,
     shell:

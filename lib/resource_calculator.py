@@ -1,13 +1,15 @@
 import random
 
 
-def select_queue(queuename: str, all_queues: dict) -> str:
+def select_partition(partitionname: str, all_partitions: dict) -> str:
     """
-    use a yaml string representation of a queue group and a configured
-    yaml array of queue names to select queue targets for a rule resource
+    use a yaml string representation of a partition group and a configured
+    yaml array of partition names to select partition targets for a rule resource
     """
-    if queuename in all_queues.keys():
-        return random.choice(all_queues[queuename])
+    if partitionname in all_partitions.keys():
+        return random.choice(all_partitions[partitionname])
     raise ValueError(
-        "Configured queue set does not match anything in user resource config: {}".format(queuename)
+        "Configured partition set does not match anything in user resource config: {}".format(
+            partitionname
+        )
     )

@@ -78,6 +78,9 @@ properties:
         pattern: "^fastqc$|^alignment$|^calling$|^release$"
       symlink-fastqs:
         type: boolean
+      assume-single-lane:
+        type: boolean
+        default: false
       import-s3:
         type: object
         properties:
@@ -142,9 +145,9 @@ properties:
           read-length:
             type: integer
             min: 1
-          required:
-            - read-length
-          additionalProperties: no
+        required:
+          - read-length
+        additionalProperties: no
       manta:
         type: object
         properties:

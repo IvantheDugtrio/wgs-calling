@@ -81,6 +81,13 @@ def get_fastqs_by_lane_and_sampleid(
             ## determine if one of a series of special lane types is present.
             ## if any of them are present, will probably need a checkpoint's output
             ## to determine the expected set of lanes.
+
+            ## handle SRA separately
+            if result["r1"].to_list()[0].startswith("sra://"):
+                return [
+                    "{}/{}/{}_L001_{}_001.fastq.gz".format(prefix, projectid, sampleid, readgroup)
+                ]
+
             available_lane = available_lanes.to_list()[0]
             if available_lane == "combined":
                 with checkpoints.input_fastq_sample_lanes.get(

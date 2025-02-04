@@ -8,6 +8,6 @@
 ## as a hack: if no conda environments are present at all, run a preflight pass that
 ## exclusively constructs conda environments.
 if [[ ! -d "snakemake/conda" ]] || ( [[ -d "snakemake/conda" ]] && [[ -z "$(ls -A .snakemake/conda)" ]] ) ; then
-    snakemake -j1 -p --rerun-incomplete --rerun-triggers mtime --use-conda --use-singularity --conda-create-envs-only
+    snakemake -j1 -p --rerun-incomplete --rerun-triggers mtime --use-conda --use-singularity --conda-create-envs-only --conda-frontend conda
 fi
-snakemake -j150 --profile ../sge-profile -p --rerun-incomplete --rerun-triggers mtime --use-conda --use-singularity --cluster-config config/cluster.yaml
+snakemake -j20 --profile ../slurm-profile -p --rerun-incomplete --rerun-triggers mtime --use-conda --use-singularity --conda-frontend conda

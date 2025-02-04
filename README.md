@@ -22,7 +22,7 @@ If desired, see [quickstart guide](quickstart.md) for abbreviated, minimal descr
 
 1. Clone this repository to your local system, into the place where you want to perform the data analysis.
 ```
-    git clone git@github.com:UCI-GREGoR/wgs-pipeline.git
+    git clone git@github.com:UCI-GREGoR/wgs-calling.git
 ```
 
 Note that this requires local git ssh key configuration; see [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) for instructions as required.
@@ -56,6 +56,7 @@ The following settings are nested under the key `behaviors` and are user-configu
 |`snv-caller`|string; which calling tool to use for SNVs. permitted values: `deepvariant`|
 |`outcome`|string; which endpoint to run to. permitted values: `fastqc` (for read QC only); `alignment`; or `calling`; or `release` to prepare results for distribution|
 |`symlink-fastqs`|boolean; whether to copy (no) or symlink (yes) input fastqs into workspace. symlinking is faster and more memory-efficient, but less reproducible, as the upstream files may vanish leaving no way to regenerate your analysis from scratch. S3 remotes (prefixed with `s3://`) are supported for input fastqs, but in that case this option will be ignored|
+|`assume-single-lane`|boolean; for bam input, whether to override on-the-fly lane calculation and assume all reads were in the same lane. useful when input aligned reads are not annotated with lane as expected. ignored when using fastq input|
 |`trim-adapters-before-alignment`|boolean; whether to use adapter trimmed fastq output of `fastp` as input to aligner. permitted values: `yes`, `no`, or `legacy`. legacy behavior for this option is to not use trimmed output for alignment.|
 |`remove-duplicates`|boolean; whether or not to remove reads that are flagged as duplicates by `gatk MarkDuplicates`. the default behavior is to remove duplicates. this flag is added as part of testing the possible introduction of unpaired reads in bams that are fine downstream but create issues in back-conversion to ubams.|
 |`export-directory`|string; top-level path to where output files should be moved after release run is complete. delete this option to disable.|
@@ -142,9 +143,9 @@ For **fastq** input, the following columns are expected in the run manifest, by 
 |---|---|
 |`projectid`|run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`|
 |`sampleid`|sequencing ID for sample|
-|`r1`|R1 fastq.gz file for sample|
-|`r2`|R2 fastq.gz file for sample|
-|`lane`|(optional) sequencing lane code, with `L00` prefix. if not specified, will be assumed to be `L001`. if the input fastq has combined lane data, specify as `combined`|
+|`r1`|R1 fastq.gz file for sample. if using SRA data, specify as `sra://SRR[0-9]+`|
+|`r2`|R2 fastq.gz file for sample. if using SRA data, specify `NA` here|
+|`lane`|(optional) sequencing lane code, with `L00` prefix. if not specified, will be assumed to be `L001`. if the input fastq has combined lane data, specify as `combined`. if specifying SRA data, supply `L001` here.|
 
 For **bam** input, which will be back-converted to fastq and realigned to the configured genome, the following columns are expected in the run manigest:
 

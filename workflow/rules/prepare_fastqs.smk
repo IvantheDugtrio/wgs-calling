@@ -28,8 +28,8 @@ rule sort_input_bam:
     threads: config_resources["samtools_sort"]["threads"]
     resources:
         mem_mb=config_resources["samtools_sort"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["samtools_sort"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["samtools_sort"]["partition"], config_resources["partitions"]
         ),
         tmpdir=tempDir,
     shell:
@@ -65,8 +65,8 @@ rule fix_mate_bam:
     threads: config_resources["samtools"]["threads"]
     resources:
         mem_mb=config_resources["samtools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["samtools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["samtools"]["partition"], config_resources["partitions"]
         ),
         tmpdir=tempDir,
     shell:
@@ -84,6 +84,8 @@ checkpoint input_bam_sample_lanes:
         "results/input_bams/{projectid}/{sampleid}.fixmate.bam",
     output:
         "results/fastqs_from_bam/{projectid}/{sampleid}_expected-lanes.tsv",
+    params:
+        assume_single_lane=config["behaviors"]["assume-single-lane"],
     benchmark:
         "results/performance_benchmarks/input_bam_sample_lanes/{projectid}/{sampleid}.tsv"
     conda:
@@ -93,11 +95,13 @@ checkpoint input_bam_sample_lanes:
     threads: 1
     resources:
         mem_mb=2000,
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["samtools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["samtools"]["partition"], config_resources["partitions"]
         ),
+        tmpdir=tempDir,
     shell:
-        'samtools view {input} | cut -f 4 -d ":" | sort | uniq > {output}'
+        'if [[ "{params.assume_single_lane}" == "True" ]] ; then echo "1" > {output} ; else '
+        'samtools view {input} | cut -f 4 -d ":" | sort | uniq > {output} ; fi'
 
 
 rule input_bam_to_split_fastq:
@@ -112,10 +116,11 @@ rule input_bam_to_split_fastq:
         expected="results/fastqs_from_bam/{projectid}/{sampleid}_expected-lanes.tsv",
     output:
         "results/fastqs_from_bam/{projectid}/{sampleid}_L00{lane}_{readgroup}_001.fastq.gz",
+    params:
+        assume_single_lane=config["behaviors"]["assume-single-lane"],
+        off_target_read_flag=lambda wildcards: 3 - int(wildcards.readgroup.strip("R")),
     benchmark:
         "results/performance_benchmarks/input_bam_to_split_fastq/{projectid}/{sampleid}_L00{lane}_{readgroup}.tsv"
-    params:
-        off_target_read_flag=lambda wildcards: 3 - int(wildcards.readgroup.strip("R")),
     conda:
         "../envs/samtools.yaml" if not use_containers else None
     container:
@@ -123,13 +128,13 @@ rule input_bam_to_split_fastq:
     threads: config_resources["samtools"]["threads"]
     resources:
         mem_mb=config_resources["samtools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["samtools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["samtools"]["partition"], config_resources["partitions"]
         ),
     shell:
         "samtools fastq -@ {threads} -s /dev/null -{params.off_target_read_flag} /dev/null -0 /dev/null -n {input.bam} | "
-        'awk -v target={wildcards.lane} \'BEGIN {{FS = ":"}} {{lane = $4 ; if (lane == target) {{print}} ; '
-        "for (i = 1 ; i <= 3 ; i++) {{getline ; if (lane == target) {{print}}}}}}' | "
+        'awk -v target={wildcards.lane} -v override={params.assume_single_lane} \'BEGIN {{FS = ":"}} {{lane = $4 ; if (lane == target || override == "True") {{print}} ; '
+        'for (i = 1 ; i <= 3 ; i++) {{getline ; if (lane == target || override == "True") {{print}}}}}}\' | '
         "bgzip -c > {output}"
 
 
@@ -153,14 +158,19 @@ checkpoint input_fastq_sample_lanes:
         "results/imported_fastqs/{projectid}/{sampleid}_combined_{readgroup}_001.fastq.gz",
     output:
         temp("results/fastqs_from_fastq/{projectid}/{sampleid}_{readgroup}_expected-lanes.tsv"),
+    params:
+        assume_single_lane=config["behaviors"]["assume-single-lane"],
     benchmark:
         "results/performance_benchmarks/input_fastq_sample_lanes/{projectid}/{sampleid}_{readgroup}.tsv"
     threads: 1
     resources:
         mem_mb=1000,
-        qname=lambda wildcards: rc.select_queue("small", config_resources["queues"]),
+        slurm_partition=lambda wildcards: rc.select_partition(
+            "small", config_resources["partitions"]
+        ),
     shell:
-        "gunzip -c {input} | awk 'NF > 1 {{print $1}}' | cut -f 4 -d ':' | sort | uniq > {output}"
+        'if [[ "{params.assume_single_lane}" == "True" ]] ; then echo "1" > {output} ; else '
+        "gunzip -c {input} | awk 'NF > 1 {{print $1}}' | cut -f 4 -d ':' | sort | uniq > {output} ; fi"
 
 
 rule input_fastq_to_split_fastq:
@@ -178,6 +188,8 @@ rule input_fastq_to_split_fastq:
         "results/imported_fastqs/{projectid}/{sampleid}_combined_{readgroup}_001.fastq.gz",
     output:
         temp("results/bbtools_input/{projectid}/{sampleid}_L00{lane}_{readgroup}_001.fastq.gz"),
+    params:
+        assume_single_lane=config["behaviors"]["assume-single-lane"],
     benchmark:
         "results/performance_benchmarks/input_fastq_to_split_fastq/{projectid}/{sampleid}_L00{lane}_{readgroup}.tsv"
     conda:
@@ -187,11 +199,13 @@ rule input_fastq_to_split_fastq:
     threads: 1
     resources:
         mem_mb=1000,
-        qname=lambda wildcards: rc.select_queue("small", config_resources["queues"]),
+        slurm_partition=lambda wildcards: rc.select_partition(
+            "small", config_resources["partitions"]
+        ),
     shell:
         "gunzip -c {input} | "
-        'awk \'BEGIN {{FS = ":"}} {{lane = $4 ; if ( lane == "{wildcards.lane}" ) {{ print }} ; '
-        'for (i = 1 ; i <= 3 ; i++) {{getline ; if ( lane == "{wildcards.lane}" ) {{ print }}}}}}\' | '
+        'awk -v override={params.assume_single_lane} \'BEGIN {{FS = ":"}} {{lane = $4 ; if ( lane == "{wildcards.lane}" || override == "True" ) {{ print }} ; '
+        'for (i = 1 ; i <= 3 ; i++) {{getline ; if ( lane == "{wildcards.lane}" || override == "True" ) {{ print }}}}}}\' | '
         "bgzip -c > {output}"
 
 
@@ -216,8 +230,8 @@ rule bbtools_repair_fastqs:
     threads: config_resources["bbtools"]["threads"]
     resources:
         mem_mb=config_resources["bbtools"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["bbtools"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["bbtools"]["partition"], config_resources["partitions"]
         ),
     shell:
         "repair.sh in1={input.R1} in2={input.R2} out1={output.R1} out2={output.R2} outs={output.singletons} repair"

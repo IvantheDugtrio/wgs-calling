@@ -5,11 +5,13 @@ rule copy_fastqs:
     be respected.
     """
     input:
-        lambda wildcards: tc.map_fastqs_to_manifest(wildcards, manifest, "R" + wildcards.readgroup)
-        if not tc.map_fastqs_to_manifest(
-            wildcards, manifest, "R" + wildcards.readgroup
-        ).startswith("s3://")
-        else [],
+        lambda wildcards: (
+            tc.map_fastqs_to_manifest(wildcards, manifest, "R" + wildcards.readgroup)
+            if not tc.map_fastqs_to_manifest(
+                wildcards, manifest, "R" + wildcards.readgroup
+            ).startswith("s3://")
+            else []
+        ),
     output:
         fastq="results/fastqs/{projectid}/{sampleid}_{lane}_R{readgroup}_{suffix}.fastq.gz",
     params:
@@ -17,9 +19,11 @@ rule copy_fastqs:
             wildcards, manifest, "R" + wildcards.readgroup
         ),
         symlink_target=config["behaviors"]["symlink-fastqs"],
-        profile=config["behaviors"]["import-s3"]["profile-name"]
-        if "import-s3" in config["behaviors"]
-        else "default",
+        profile=(
+            config["behaviors"]["import-s3"]["profile-name"]
+            if "import-s3" in config["behaviors"]
+            else "default"
+        ),
     benchmark:
         "results/performance_benchmarks/copy_fastqs/{projectid}/{sampleid}_{lane}_R{readgroup}_{suffix}.fastq.tsv"
     threads: config_resources["default"]["threads"]
@@ -29,8 +33,8 @@ rule copy_fastqs:
         "{}/awscli.sif".format(apptainer_images) if use_containers else None
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     shell:
         'if [[ "{params.fastq}" == "s3://"* ]] ; then '
@@ -49,9 +53,11 @@ rule copy_bams:
         bam=temp("results/imported_bams/{projectid}/{sampleid}.bam"),
     params:
         bam=lambda wildcards: tc.locate_input_bam(wildcards, manifest, False),
-        profile=config["behaviors"]["import-s3"]["profile-name"]
-        if "import-s3" in config["behaviors"]
-        else "default",
+        profile=(
+            config["behaviors"]["import-s3"]["profile-name"]
+            if "import-s3" in config["behaviors"]
+            else "default"
+        ),
     benchmark:
         "results/performance_benchmarks/copy_bams/{projectid}/{sampleid}.tsv"
     conda:
@@ -61,8 +67,8 @@ rule copy_bams:
     threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
-        qname=lambda wildcards: rc.select_queue(
-            config_resources["default"]["queue"], config_resources["queues"]
+        slurm_partition=lambda wildcards: rc.select_partition(
+            config_resources["default"]["partition"], config_resources["partitions"]
         ),
     shell:
         'if [[ "{params.bam}" == "s3://"* ]] ; then '

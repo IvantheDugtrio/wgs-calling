@@ -4,3 +4,4 @@ channels:
 dependencies:
   - delly
   - bcftools
+  - boost >=1.85,<1.86
