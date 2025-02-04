@@ -1,10 +1,15 @@
 rule run_fastp:
     """
-    Run fastp on a paired end library
+    Run fastp on a paired end library.
+
+    Due to accumulated polyA garbage appearing more often in Illumina libraries,
+    I'm adding an adapter fasta to be used after fastp runs its own internal
+    overlap analysis.
     """
     input:
         r1="results/fastqs/{projectid}/{sampleid}_{lane}_R1_001.fastq.gz",
         r2="results/fastqs/{projectid}/{sampleid}_{lane}_R2_001.fastq.gz",
+        adapter_fasta="resources/fastp_adapters.fasta",
     output:
         html="results/fastp/{projectid}/{sampleid}_{lane}_fastp.html",
         json="results/fastp/{projectid}/{sampleid}_{lane}_fastp.json",
@@ -36,6 +41,7 @@ rule run_fastp:
         "-q {params.quality} "
         "--trim_poly_g "
         "--trim_poly_x "
+        "--adapter_fasta {input.adapter_fasta} "
         "--verbose "
         "--overrepresentation_analysis "
         "--overrepresentation_sampling 100 "
