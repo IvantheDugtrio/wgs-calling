@@ -4,28 +4,29 @@ from lib import resource_calculator as rc
 
 
 @pytest.fixture
-def queue_set():
-    queues = {"small": ["q1", "q2", "q3"], "large": ["q4", "q5"], "huge": ["q6"]}
-    return queues
+def partition_set():
+    partitions = {"small": ["q1", "q2", "q3"], "large": ["q4", "q5"], "huge": ["q6"]}
+    return partitions
 
 
 @pytest.mark.parametrize(
-    "selected_queue,expected_queues",
+    "selected_partition,expected_partitions",
     [("small", ["q1", "q2", "q3"]), ("large", ["q4", "q5"]), ("huge", ["q6"])],
 )
-def test_select_queue(queue_set, selected_queue, expected_queues):
+def test_select_partition(partition_set, selected_partition, expected_partitions):
     """
-    Test select_queue when the user selection is valid
+    Test select_partition when the user selection is valid
     """
-    res = [rc.select_queue(selected_queue, queue_set) for i in range(100)]
-    assert set(res) == set(expected_queues)
+    res = [rc.select_partition(selected_partition, partition_set) for i in range(100)]
+    assert set(res) == set(expected_partitions)
 
 
-def test_select_queue_invalid_selection(queue_set):
+def test_select_partition_invalid_selection(partition_set):
     """
-    Test select_queue when the user selection is invalid
+    Test select_partition when the user selection is invalid
     """
     with pytest.raises(
-        ValueError, match=r"Configured queue set does not match anything in user resource config.*"
+        ValueError,
+        match=r"Configured partition set does not match anything in user resource config.*",
     ):
-        rc.select_queue("fake_queue", queue_set)
+        rc.select_partition("fake_partition", partition_set)
