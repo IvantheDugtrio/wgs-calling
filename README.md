@@ -22,7 +22,7 @@ If desired, see [quickstart guide](quickstart.md) for abbreviated, minimal descr
 
 1. Clone this repository to your local system, into the place where you want to perform the data analysis.
 ```
-    git clone git@github.com:UCI-GREGoR/wgs-pipeline.git
+    git clone git@github.com:UCI-GREGoR/wgs-calling.git
 ```
 
 Note that this requires local git ssh key configuration; see [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) for instructions as required.
@@ -143,9 +143,9 @@ For **fastq** input, the following columns are expected in the run manifest, by 
 |---|---|
 |`projectid`|run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`|
 |`sampleid`|sequencing ID for sample|
-|`r1`|R1 fastq.gz file for sample|
-|`r2`|R2 fastq.gz file for sample|
-|`lane`|(optional) sequencing lane code, with `L00` prefix. if not specified, will be assumed to be `L001`. if the input fastq has combined lane data, specify as `combined`|
+|`r1`|R1 fastq.gz file for sample. if using SRA data, specify as `sra://SRR[0-9]+`|
+|`r2`|R2 fastq.gz file for sample. if using SRA data, specify `NA` here|
+|`lane`|(optional) sequencing lane code, with `L00` prefix. if not specified, will be assumed to be `L001`. if the input fastq has combined lane data, specify as `combined`. if specifying SRA data, supply `L001` here.|
 
 For **bam** input, which will be back-converted to fastq and realigned to the configured genome, the following columns are expected in the run manigest:
 
