@@ -1,6 +1,7 @@
 name: wgs-pipeline
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
 dependencies:
   - snakemake
+  - snakemake-storage-plugin-s3

@@ -20,6 +20,7 @@ rule fastq_screen_get_references:
             config_resources["fastq_screen"]["partition"], config_resources["partitions"]
         ),
     shell:
+        "if [[ -d {params.outdir} ]] ; then rm -rf {params.outdir} ; fi && "  # remove outdir so fastq_screen doesn't error out
         "fastq_screen --threads {threads} --get_genomes --outdir {params.outdir} && "
         "sed -r 's|(DATABASE\\t[^\\t]+\\t).*(reference_data/.*)|\\1\\2|' {params.intermediate}/fastq_screen.conf > {params.intermediate}/fastq_screen.conf.tmp && "
         "mv {params.intermediate}/fastq_screen.conf.tmp {params.intermediate}/fastq_screen.conf"

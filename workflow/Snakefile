@@ -4,14 +4,14 @@
 import os
 import pathlib
 import pandas as pd
-from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
+#from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 from snakemake.utils import validate
 import subprocess
 import tempfile
 import yaml
 
-S3 = S3RemoteProvider()
+#S3 = S3RemoteProvider()
 
 sys.path.insert(0, ".")
 from lib import export_data as ed

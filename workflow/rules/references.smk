@@ -30,7 +30,7 @@ rule download_reference_data:
         ),
         tmpdir=tempDir,
     shell:
-        'if [[ "{params}" == "s3://"* ]] ; then aws s3 cp {params} {output}.staging ; '
+        'if [[ "{params}" == "s3://"* ]] ; then aws s3 cp --no-sign-request {params} {output}.staging ; '  # issue exporting aws profile
         'elif [[ "{params}" == "http://"* ]] || [[ "{params}" == "https://"* ]] || [[ "{params}" == "ftp://"* ]] ; then wget -O {output}.staging {params} ; '
         "else cp {params} {output}.staging ; fi ; "
         'if [[ "{params}" = *".gz" ]] && [[ "{output}" != *".gz" ]] ; then cat {output}.staging | gunzip -c > {output} && rm {output}.staging ; '

@@ -42,6 +42,11 @@ resources
 resources/*
 !resources/README.md
 
+config/*.tsv
+!config/manifest.tsv
+!config/sample_linking_external_ids.tsv
+!config/sample_linking_sex.tsv
+
 # Workflow Artifacts
 .snakemake/
 

@@ -7,7 +7,7 @@ properties:
   sex:
     type: string
     description: "sample self-reported sex"
-    pattern: "^Female$|^Male$"
+    pattern: "^Female$|^Male$|^Unknown$"
 required:
   - sampleid
   - sex

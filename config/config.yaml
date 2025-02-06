@@ -1,16 +1,18 @@
 # This file should contain everything to configure the workflow on a global scale.
 # In case of sample based data, it should be complemented by a manifest file that contains
 # one row per sample. It can be parsed easily via pandas.
-manifest: "config/manifest.tsv"
+manifest: "config/P001.tsv"
 sample-linking:
-  sex: "config/sample_linking_sex.tsv"
-  external-ids: "config/sample_linking_external_ids.tsv"
+  sex: "config/P001_sex.tsv"
+  external-ids: "config/P001_external_id.tsv"
 genome-build: "grch38"
 apptainer-image-dir: "apptainer_images"
 
 behaviors:
+  outcome: "calling"  # fastqc, alignment, calling, or release
+  library-type: "WES"
   use-containers: no
-  aligner: "bwa"
+  aligner: "bwa-mem2"  # bwa or bwa-mem2
   qc-type:
     - "lane-specific"
     - "combined-lanes"
@@ -31,16 +33,15 @@ behaviors:
       sv-ensemble:
         min-count: 1
       sv-remove-breakends: yes
-  outcome: "release"
-  symlink-fastqs: no
-  assume-single-lane: no
-  remove-duplicates: no
+  symlink-fastqs: yes  # For local fastqs, no need to copy them
+  assume-single-lane: yes  # For this project, only 1 lane was provided
+  remove-duplicates: yes
   import-s3:
-    profile-name: "profile-name"
-  export-directory: "/path/to/top/level/exports"
+    profile-name: "default"
+  export-directory: "exports/"
   export-s3:
-    bucket-name: "s3://bucket-name"
-    profile-name: "profile-name"
+    bucket-name: "s3://pmgrc-gregor-data/wgs-short-read/idedios_demos"
+    profile-name: "default"
 
 parameters:
   bwa:
@@ -51,7 +52,7 @@ parameters:
     number-shards: 16
     docker-version: "1.5.0"
   gatk-collectwgsmetrics:
-    read-length: 300
+    read-length: 200  # Only for this particular WES library
   manta:
     config-ini: "config/configManta.py.ini"
   tiddit:
@@ -59,6 +60,8 @@ parameters:
 
 references:
   grch38:
+    probes-bed: "resources/xgen-exome-hyb-panel-v2-probes-hg38.bed"
+    targets-bed: "resources/xgen-exome-hyb-panel-v2-targets-hg38.bed"
     fasta: "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz"
     exclusion-regions-bed: "resources/grch38_encodelist_centromeres_telomeres.bed"
     exons-gtf-gz: "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.ncbiRefSeq.gtf.gz"

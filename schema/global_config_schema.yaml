@@ -21,6 +21,12 @@ properties:
   behaviors:
     type: object
     properties:
+      outcome:
+        type: string
+        pattern: "^fastqc$|^alignment$|^calling$|^release$"
+      library-type:
+        type: string
+        pattern: "^WES$|^WGS$"
       use-containers:
         type: boolean
         default: no
@@ -73,9 +79,6 @@ properties:
               - sv-ensemble
               - sv-remove-breakends
             additionalProperties: no
-      outcome:
-        type: string
-        pattern: "^fastqc$|^alignment$|^calling$|^release$"
       symlink-fastqs:
         type: boolean
       assume-single-lane:
@@ -102,6 +105,7 @@ properties:
           - bucket-name
         additionalProperties: false
     required:
+      - library-type
       - aligner
       - snv-caller
       - sv-endpoints
@@ -177,6 +181,10 @@ properties:
       "^grch[0-9]+$":
         type: object
         properties:
+          probes-bed:
+            type: string
+          targets-bed:
+            type: string
           fasta:
             type: string
           exclusion-regions-bed:
