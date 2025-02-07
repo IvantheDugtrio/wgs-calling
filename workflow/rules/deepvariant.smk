@@ -113,8 +113,9 @@ rule deepvariant_call_variants:
             "results/deepvariant/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deepvariant"]["threads"],
         ),
-        model_type=config["behaviors"]["library-type"].lower(),
-        docker_model="/opt/models/{params.model_type}/model.ckpt",
+        docker_model="/opt/models/{}/model.ckpt".format(
+            config["behaviors"]["library-type"].lower()
+        ),
     conda:
         "../envs/apptainer.yaml" if not use_containers else None
     threads: config_resources["deepvariant"]["threads"]
