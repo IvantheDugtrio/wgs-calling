@@ -26,7 +26,7 @@ properties:
         pattern: "^fastqc$|^alignment$|^calling$|^release$"
       library-type:
         type: string
-        pattern: "^WES$|^WGS$"
+        pattern: "^WES$|^WGS$|^PACBIO$|^ONT_R104$|^HYBRID_PACBIO_ILLUMINA$|^MASSEQ$"
       use-containers:
         type: boolean
         default: no
