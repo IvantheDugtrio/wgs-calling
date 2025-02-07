@@ -13,6 +13,17 @@ finer-grained configuration is available in [the readme](README.md).
     - profiles are available [here](https://github.com/Snakemake-Profiles).
     - for internal UGE support, a pre-configured profile is available in the github repo `pmgrc-sge-profile`.
 
+## [For Ubuntu 24.04 and later only]
+- To use Apptainer and/or Singularity, you need to remove apparmor's restrictions on creating unprivileged user namespaces
+  and unconfined user namespaces with the following edits to apparmor's do not restrict configuration:
+  ```
+  echo 'kernel.apparmor_restrict_unprivileged_unconfined = 0' │ \
+      sudo tee /etc/sysctl.d/20-apparmor-donotrestrict.conf
+  echo 'kernel.apparmor_restrict_unprivileged_userns = 0' │ \
+      sudo tee /etc/sysctl.d/20-apparmor-donotrestrict.conf
+  ```
+  Apply these and reboot.
+
 ## Configuration for each workflow deployment
 - Make sure appropriate conda environment is active.
 - Clone repo from the github repo `wgs-pipeline`.
