@@ -31,7 +31,7 @@ except subprocess.CalledProcessError:
 print("wgs-pipeline version {}".format(pipeline_version))
 
 
-configfile: "config/config.yaml"
+configfile: "config/P001.config.yaml"
 
 
 with open("config/config_resources.yaml", "r") as f:

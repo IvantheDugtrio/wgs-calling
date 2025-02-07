@@ -43,6 +43,8 @@ resources/*
 !resources/README.md
 
 config/*.tsv
+config/*.config.yaml
+!config/config.example.yaml
 !config/manifest.tsv
 !config/sample_linking_external_ids.tsv
 !config/sample_linking_sex.tsv

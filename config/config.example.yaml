@@ -1,21 +1,21 @@
 # This file should contain everything to configure the workflow on a global scale.
 # In case of sample based data, it should be complemented by a manifest file that contains
 # one row per sample. It can be parsed easily via pandas.
-manifest: "config/DRC-WGS-10X_edelot.tsv"
+manifest: "config/WES_sbsandme.tsv"
 sample-linking:
-  sex: "config/DRC-WGS-10X_edelot_sexes.tsv"  # DSD probands do not provide a sex. Will use male as a placeholder.
-  external-ids: "config/DRC-WGS-10X_edelot_external_ids.tsv"
+  sex: "config/WES_sbsandme_sexes.tsv"
+  external-ids: "config/WES_sbsandme_external_ids.tsv"
 genome-build: "grch38"
 apptainer-image-dir: "apptainer_images"
 
 behaviors:
-  outcome: "alignment"  # fastqc, alignment, calling, or release
+  outcome: "calling"  # fastqc, alignment, calling, or release
   library-type: "WGS"  # WGS, WES, PACBIO, ONT_R104, HYBRID_PACBIO_ILLUMINA, MASSEQ
   use-containers: no
   aligner: "bwa-mem2"  # bwa or bwa-mem2
   qc-type:
     - "lane-specific"
-    - "combined-lanes"
+    - "combined-lanes"  # Comment-out for single-lane libraries
   bqsr: yes
   snv-caller: "deepvariant"
   sv-endpoints:
@@ -33,9 +33,9 @@ behaviors:
       sv-ensemble:
         min-count: 1
       sv-remove-breakends: yes
-  symlink-fastqs: yes  # For local fastqs, no need to copy them
-  assume-single-lane: no
-  remove-duplicates: yes
+  symlink-fastqs: yes  # For local filesystem fastqs, no need to copy them
+  assume-single-lane: no # Edit in conjunction with qc-type
+  remove-duplicates: yes  # Saves bam space for now
   import-s3:
     profile-name: "default"
   export-directory: "exports/"
@@ -50,9 +50,9 @@ parameters:
     K: 120000000
   deepvariant:
     number-shards: 16
-    docker-version: "1.5.0"
+    docker-version: "1.5.0"  # Plan to upgrade to 1.8.0 but currently there are issues with make_examples
   gatk-collectwgsmetrics:
-    read-length: 300
+    read-length: 300  # Set read lengths here
   manta:
     config-ini: "config/configManta.py.ini"
   tiddit:
@@ -60,8 +60,8 @@ parameters:
 
 references:
   grch38:
-    probes-bed:
-    targets-bed:
+    probes-bed: "resources/xgen-exome-hyb-panel-v2-probes-hg38.bed"
+    targets-bed: "resources/xgen-exome-hyb-panel-v2-targets-hg38.bed"
     fasta: "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz"
     exclusion-regions-bed: "resources/grch38_encodelist_centromeres_telomeres.bed"
     exons-gtf-gz: "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.ncbiRefSeq.gtf.gz"

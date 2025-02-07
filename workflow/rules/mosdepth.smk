@@ -24,7 +24,9 @@ rule run_mosdepth:
         "results/performance_benchmarks/run_mosdepth/{projectid}/{prefix}.tsv"
     params:
         outprefix="results/mosdepth/{projectid}/{prefix}",
-        win_size=200,
+        probes_bed=config["references"][reference_build]["targets-bed"],
+        library_type=config["behaviors"]["library-type"].lower(),
+        win_size=params.probes_bed if params.library_type == "wes" else 200,
         mapq=20,
         T="0,10,15,20,30",
     conda:
